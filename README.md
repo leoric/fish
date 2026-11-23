@@ -9,17 +9,19 @@ For macOS, Linux and Windows 11 (via WSL2). Needs **fish 3.6 or newer** (4.x rec
 | `config.fish` | `~/.config/fish/config.fish` | interactive part |
 | `conf.d/00-env.fish` | `…/conf.d/` | `profile`: Homebrew, locale, pager, `PATH`, `LS_COLORS`, umask |
 | `conf.d/10-llm.fish` | `…/conf.d/` | LLM variables |
-| `conf.d/11-secrets.fish` | `…/conf.d/` (**copied**, not linked) | empty API-key template |
+| `conf.d/11-secrets.fish` | `…/conf.d/` (**copied**) | empty API-key template |
 | `conf.d/20-aliases.fish` … `30-python.fish` | `…/conf.d/` | abbreviations |
 | `functions/*.fish` | `…/functions/` | functions |
 | `fish_plugins` | `…/fish_plugins` | managed by [fisher](https://github.com/jorgebucaran/fisher) |
 | `nvimrc` | `~/.config/nvim/init.vim` |  |
+| `starship/starship.toml` | `~/.config/starship.toml` |  |
+| `starship/starship-ide.toml` | `~/.config/starship-ide.toml` | starship is used for better crossplatform compatibility |
 | `scripts/zsh_history_to_fish.py` | *not installed* | one-off history importer |
 
 ## Install
 
 ```sh
-git clone <your-repo-url> ~/fish- && cd ~/fish
+git clone <your-repo-url> ~/fish && cd ~/fish
 ./install.sh                # links files, installs fisher + plugins
 ./install.sh --history      # ...and imports ~/.zsh_history
 ./install.sh --dry-run      # preview
@@ -84,12 +86,15 @@ Alternative: MSYS2 (`pacman -S fish`). It works, but set `MSYS=winsymlinks:nativ
 
 ```sh
 fisher update                 # install/update plugins from fish_plugins
-fisher install owner/repo     # add a plugin (appends to fish_plugins)
-abbr --show | grep git        # list abbreviations
 fish_update_completions       # regenerate completions from man pages
+fisher install owner/repo     # add a plugin (appends to fish_plugins)
+ag foo                        # list abbreviations
 exec fish                     # reload after editing
 ```
-New function: drop `name.fish` into `functions/` and rerun `./install.sh`.
+
+## New function
+
+drop `name.fish` into `functions/` and rerun `./install.sh`.
 
 ## Uninstall
 
