@@ -1,0 +1,5 @@
+*.bak
+*.bak.*
+*secrets*
+fish_variables
+!conf.d/11-secrets.fish

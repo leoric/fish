@@ -1,0 +1,218 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Starship prompt, ported from a Powerlevel10k "classic" config
+# (two lines, sharp powerline separators, dotted gap, Nerd Font icons).
+#
+#   ┌ ◀  os ▶ dir ▶ git ▶ ····································· ◀ status ◀ 3s ◀ time ▶
+#   └ ❯
+#
+# Colours are ANSI/256-colour numbers, same as the original p10k file, so they
+# follow the terminal palette:
+#   0 black  1 red  2 green  3 yellow  4 blue  5 magenta  6 cyan  7 white
+#
+# Glyphs are written as \u escapes so they survive editors without a Nerd Font:
+#   \ue0b0 powerline right arrow (segment tail)
+#   \ue0b2 powerline left arrow  (segment head)
+#
+# Needs a Nerd Font in the terminal.
+
+add_newline = false
+
+# Line 1: left segments, dotted gap, right segments. Line 2: prompt character.
+#
+# The git segment is one conditional group: it is drawn only inside a repo, and
+# `directory.repo_root_format` supplies the matching arrow between the two.
+format = """
+[\ue0b0](bg:10 fg:0)\
+$os\
+$directory\
+($git_branch$git_commit$git_state$git_status[ ](  bg:14)[\ue0b0](fg:14))\
+$fill\
+$status\
+$cmd_duration\
+$jobs\
+$direnv\
+$python\
+$conda\
+$nix_shell\
+$kubernetes\
+$terraform\
+$aws\
+($username$hostname[ ](bg:0))\
+$time\
+$line_break\
+$character"""
+
+# ── Left ────────────────────────────────────────────────────────────────────
+
+[os]
+disabled = true
+format = "[ $symbol ](fg:232 bg:7)[\ue0b0](fg:7 bg:4)"
+
+[os.symbols]
+Macos = "\uf179"
+Ubuntu = "\uf31b"
+Debian = "\uf306"
+Raspbian = "\uf315"
+Arch = "\uf303"
+Fedora = "\uf30a"
+Alpine = "\uf300"
+NixOS = "\uf313"
+FreeBSD = "\uf30c"
+Windows = "\uf17a"
+Linux = "\uf17c"
+Unknown = "\uf22d"
+
+[directory]
+# Shorten parent directories to one character once the path gets deep, keep the
+# last four in full. Outside a repo the segment ends with its own arrow; inside
+# a repo `repo_root_format` is used instead and the arrow leads into git.
+truncation_length = 4
+truncation_symbol = "…/"
+truncate_to_repo = false
+fish_style_pwd_dir_length = 1
+read_only = " \uf023"
+format = "[ $path](fg:0 bg:10)[$read_only](fg:196 bg:10)[ ](bg:10)[\ue0b0](fg:10)"
+# Dimmed parents, bold repo root (p10k "anchor" directory).
+repo_root_style = "bold fg:255 bg:4"
+before_repo_root_style = "fg:250 bg:4"
+repo_root_format = "[ $before_root_path](fg:0 bg:11)[$repo_root](fg:0 bg:11)[$path](fg:254 bg:11)[$read_only](fg:196 bg:11)[ ](bg:11)[\ue0b0](fg:11   bg:14)"
+
+[git_branch]
+symbol = "\uf126 "
+format = "[ $symbol$branch](fg:0   bg:14)"
+truncation_length = 32
+truncation_symbol = "…"
+# Detached HEAD is shown by git_commit instead.
+ignore_branches = ["HEAD"]
+
+[git_commit]
+only_detached = true
+commit_hash_length = 8
+tag_disabled = false
+tag_symbol = " #"
+format = "[ @$hash$tag](fg:0   bg:14)"
+
+[git_state]
+format = "[ $state( $progress_current/$progress_total)](fg:1   bg:14)"
+rebase = "rebase"
+merge = "merge"
+revert = "revert"
+cherry_pick = "cherry-pick"
+bisect = "bisect"
+am = "am"
+am_or_rebase = "am/rebase"
+
+[git_status]
+# Same markers and order as p10k: ⇣behind ⇡ahead, *stash, ~conflicted,
+# +staged, !unstaged, ?untracked.
+format = "([$ahead_behind$stashed$conflicted$staged$renamed$modified$deleted$typechanged$untracked](fg:0  bg:14))"
+ahead = " ⇡${count}"
+behind = " ⇣${count}"
+diverged = " ⇣${behind_count} ⇡${ahead_count}"
+up_to_date = ""
+stashed = " *${count}"
+conflicted = " ~${count}"
+staged = " +${count}"
+renamed = " +${count}"
+typechanged = " !${count}"
+modified = " !${count}"
+deleted = " !${count}"
+untracked = " ?${count}"
+
+[fill]
+symbol = "·"
+style = "fg:244"
+
+# ── Right ───────────────────────────────────────────────────────────────────
+# Each segment draws its own \ue0b2 head. The group at the end (time) also
+# draws the closing tail.
+
+[status]
+disabled = false
+symbol = "✘"
+success_symbol = "✘"
+# Like p10k (STATUS_ERROR=false), a plain non-zero exit is not shown here; the
+# prompt character turns red for that. Only signals and failed pipelines are.
+format = "([\ue0b2](fg:1)[ $symbol $signal_name ](fg:3 bg:1))"
+pipestatus = true
+pipestatus_separator = "|"
+pipestatus_segment_format = "$status"
+pipestatus_format = "[\ue0b2](fg:1)[ $symbol $pipestatus ](fg:3 bg:1)"
+
+[cmd_duration]
+min_time = 3000
+show_milliseconds = false
+format = "[\ue0b2](fg:3)[ $duration ](fg:0 bg:3)"
+
+[jobs]
+symbol = "⚙"
+symbol_threshold = 1
+number_threshold = 1000
+format = "[\ue0b2](fg:0)[ $symbol ](fg:6 bg:0)"
+
+[direnv]
+disabled = false
+symbol = "\ue613 "
+format = "[\ue0b2](fg:0)[ $symbol$loaded ](fg:3 bg:0)"
+
+[python]
+# p10k "virtualenv": just the environment name, no interpreter version.
+symbol = "\ue235 "
+format = "[\ue0b2](fg:4)[ $virtualenv ](fg:0 bg:4)"
+detect_env_vars = ["VIRTUAL_ENV"]
+detect_extensions = []
+detect_files = []
+detect_folders = []
+
+[conda]
+symbol = "\ue715 "
+format = "[\ue0b2](fg:4)[ $symbol$environment ](fg:0 bg:4)"
+
+[nix_shell]
+symbol = "\uf313 "
+format = "[\ue0b2](fg:4)[ $symbol$state ](fg:0 bg:4)"
+
+[kubernetes]
+# p10k shows the context only while typing kubectl/helm/...; Starship has no
+# per-command trigger, so it appears in directories with typical k8s files.
+disabled = false
+symbol = "\U000f10fe "
+format = "[\ue0b2](fg:5)[ $symbol$context(/$namespace) ](fg:7 bg:5)"
+detect_files = ["kustomization.yaml", "Chart.yaml", "helmfile.yaml", "skaffold.yaml"]
+detect_folders = ["k8s", "kubernetes"]
+
+[terraform]
+symbol = "\ue69a "
+format = "[\ue0b2](fg:0)[ $symbol$workspace ](fg:4 bg:0)"
+
+[aws]
+symbol = "\uf0ef "
+format = "[\ue0b2](fg:1)[ $symbol$profile( $region) ](fg:7 bg:1)"
+
+# user@host: only over SSH or as root (p10k hid it otherwise). The trailing
+# space lives in the main `format`.
+[username]
+format = "[\ue0b2](fg:0)[ $user]($style)"
+style_user = "fg:3 bg:0"
+style_root = "fg:1 bg:0"
+show_always = false
+
+[hostname]
+ssh_only = true
+format = "[@$hostname](fg:3 bg:0)"
+
+[time]
+disabled = false
+time_format = "%H:%M:%S"
+format = "[\ue0b2](fg:7)[ $time ](fg:0 bg:7)[\ue0b0](fg:7)"
+
+# ── Prompt character (second line) ──────────────────────────────────────────
+
+[character]
+success_symbol = "[❯](fg:76)"
+error_symbol = "[❯](fg:196)"
+vimcmd_symbol = "[❮](fg:76)"
+vimcmd_replace_one_symbol = "[▶](fg:76)"
+vimcmd_replace_symbol = "[▶](fg:76)"
+vimcmd_visual_symbol = "[V](fg:76)"
