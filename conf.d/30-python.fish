@@ -1,6 +1,6 @@
 # Automatic project virtualenv (was: python.zsh `manage_pro_venv` + chpwd hook).
 #  - Outside $PRO_PROJECT_ROOT, or inside it with no .py files below: deactivate.
-#  - Inside it with a .py file: activate $PWD/.venv if present, else $PRO_VENV.
+#  - Inside it with a .py file: activate $PWD/.venv if present, else $PYTHON_DEFAULT_VENV.
 status is-interactive; or return
 
 function manage_pro_venv --on-variable PWD --description 'Switch project venv on cd'
@@ -25,7 +25,7 @@ function manage_pro_venv --on-variable PWD --description 'Switch project venv on
         return
     end
 
-    set -l target $PRO_VENV
+    set -l target $PYTHON_DEFAULT_VENV
     test -d $PWD/.venv; and set target $PWD/.venv
 
     test -f $target/bin/activate.fish; or return

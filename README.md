@@ -75,7 +75,7 @@ Alternative: MSYS2 (`pacman -S fish`). It works, but set `MSYS=winsymlinks:nativ
 - **`ag`** is an abbreviation for `abbr --show | grep` (was `alias | grep`). It shadows the_silver_searcher's `ag` at the prompt. fzf still finds the real `ag` because the abbreviation only exists in the interactive prompt.
 - **`ANTHROPIC_BASE_URL`** routes API traffic through a third-party host. Keep it only if intended (`conf.d/10-llm.fish`).
 - **keychain** loads `id_rsa`; change it in `config.fish` if you use `id_ed25519`.
-- **`PRO_PROJECT_ROOT` / `PRO_VENV`** in `00-env.fish` drive the automatic venv switching on `cd`. `PATH` entries that don't exist on a machine are skipped automatically.
+- **`PRO_PROJECT_ROOT` / `PYTHON_DEFAULT_VENV`** in `00-env.fish` drive the automatic venv switching on `cd`. `PATH` entries that don't exist on a machine are skipped automatically.
 - **Alt-E** is rebound to end-of-line (as before); fish's "edit command in $EDITOR" stays on Alt-V.
 - **Secrets**: `install.sh` copies `11-secrets.fish` once (mode 600) and never overwrites it, so fill in the keys in `~/.config/fish/conf.d/11-secrets.fish`, not in the repo. Other per-machine bits go in `~/.config/fish/local.fish`.
 - Install `fzf` ≥ 0.48 for Ctrl-R / Ctrl-T / Alt-C (`fzf --fish`).

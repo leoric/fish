@@ -23,7 +23,7 @@ set -gx PAGER less
 
 # Project virtualenv switching (see conf.d/30-python.fish)
 set -gx PRO_PROJECT_ROOT $HOME/pro
-set -gx PRO_VENV $HOME/.venv
+set -gx PYTHON_DEFAULT_VENV $HOME/.venv
 # Stop activate.fish of python venv from rewriting the prompt
 set -gx VIRTUAL_ENV_DISABLE_PROMPT 1
 
@@ -31,7 +31,7 @@ set -gx VIRTUAL_ENV_DISABLE_PROMPT 1
 # so machine-specific entries are harmless elsewhere.
 fish_add_path --global --move \
     $HOME/.local/bin \
-    $PRO_VENV/bin \
+    $PYTHON_DEFAULT_VENV/bin \
     $HOME/.spoofdpi/bin \
     $HOME/MEGA/IT/bin
 
